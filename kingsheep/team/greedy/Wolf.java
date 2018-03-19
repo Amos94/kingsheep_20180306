@@ -17,7 +17,7 @@ public class Wolf extends GreedyCreature {
             move = getGreedyAction(map, objectives);
 
             if (move == null){
-                move = Move.WAIT;
+                move = Move.DOWN;
             }
 
         }else {

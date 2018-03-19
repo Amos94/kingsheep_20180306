@@ -27,36 +27,38 @@ public class Sheep extends UzhShortNameCreature {
         //initialize the return array with false
         toReturn[0] = toReturn[1] = toReturn[2] = toReturn[3] = false;
 
+        //bounderies of the map
+//        //UP
+//        if(x-1 < 0)
+//            toReturn[0] = false;
+//        //DOWN
+//        if(y+1 == map[0].length)
+//            toReturn[1] = false;
+//        //RIGHT
+//        if(x+1 == map.length)
+//            toReturn[2] = false;
+//        //left
+//        if(y-1 < 0)
+//            toReturn[3] = false;
+
+
         //if the move is acceptable, then => change the element of the array to true
         //else, leave it false
 
-        // UP => x-1, y
-        //RIGHT => x, y+1
-        //DOWN => x+1, y
-        //LEFT => x, y-1
+        // UP => x-1, y => y-1
+        //RIGHT => x, y+1 => x+1
+        //DOWN => x+1, y => y+1
+        //LEFT => x, y-1 => x-1
 
-        if(isSafe(map, x-1, y))
+        if(x-1 >= 0 && isSafe(map, x-1, y))
             toReturn[0] = true;
-        if(isSafe(map, x, y+1))
+        if(y+1 < map[0].length && isSafe(map, x, y+1))
             toReturn[1] = true;
-        if(isSafe(map, x+1, y))
+        if(x+1 < map.length && isSafe(map, x+1, y))
             toReturn[2] = true;
-        if(isSafe(map, x, y-1))
+        if(y-1 >= 0 && isSafe(map, x, y-1))
             toReturn[3] = true;
 
-        //bounderies of the map
-        //UP
-        if(x-1 == -1)
-            toReturn[0] = false;
-        //DOWN
-        if(y+1 == map[0].length)
-            toReturn[1] = false;
-        //RIGHT
-        if(x+1 == map.length)
-            toReturn[2] = false;
-        //left
-        if(y-1 == -1)
-            toReturn[3] = false;
 
 
         return toReturn;
@@ -99,10 +101,15 @@ public class Sheep extends UzhShortNameCreature {
         move = Move.RIGHT;
         move = Move.WAIT;
 		*/
-		if(checkAdjcentSquares(map)[2])
-            move = Move.DOWN;
-		else
-		    System.out.println("NOT SAFE TO MOVE DOWN");
-        move = Move.DOWN;
+		try {
+            if (checkAdjcentSquares(map)[3])
+                move = Move.LEFT;
+            else
+                System.out.println("NOT SAFE TO MOVE UP");
+            //move = Move.UP;
+        }catch(Exception ex){
+		    //Don't go outside the map
+            //System.out.println("Don't go outside the map");
+        }
     }
 }
