@@ -45,18 +45,20 @@ public class Sheep extends UzhShortNameCreature {
         //if the move is acceptable, then => change the element of the array to true
         //else, leave it false
 
-        // UP => x-1, y => y-1
-        //RIGHT => x, y+1 => x+1
-        //DOWN => x+1, y => y+1
-        //LEFT => x, y-1 => x-1
+        // UP => x, y-1
+        //RIGHT => x+1, y
+        //DOWN => x, y+1
+        //LEFT => x-1, y
+        System.out.println("X: "+map[0].length);
+        System.out.println("Y: "+map.length);
 
-        if(x-1 >= 0 && isSafe(map, x-1, y))
-            toReturn[0] = true;
-        if(y+1 < map[0].length && isSafe(map, x, y+1))
-            toReturn[1] = true;
-        if(x+1 < map.length && isSafe(map, x+1, y))
-            toReturn[2] = true;
         if(y-1 >= 0 && isSafe(map, x, y-1))
+            toReturn[0] = true;
+        if(x+1 < map[0].length && isSafe(map, x+1, y))
+            toReturn[1] = true;
+        if(y+1 < map.length && isSafe(map, x, y+1))
+            toReturn[2] = true;
+        if(x-1 >= 0 && isSafe(map, x-1, y))
             toReturn[3] = true;
 
 
@@ -67,7 +69,7 @@ public class Sheep extends UzhShortNameCreature {
      //check if a particular square is safe, i.e. no wolf, sheep, fence is on that square
     protected boolean isSafe(Type[][] map, int x, int y){
 
-        Type type = map[x][y];
+        Type type = map[y][x];
 
         if(type == type.FENCE || type == type.WOLF2 || type == type.SHEEP2 || type == type.WOLF1)
             return false;
@@ -102,8 +104,8 @@ public class Sheep extends UzhShortNameCreature {
         move = Move.WAIT;
 		*/
 		try {
-            if (checkAdjcentSquares(map)[3])
-                move = Move.LEFT;
+            if (checkAdjcentSquares(map)[1])
+                move = Move.RIGHT;
             else
                 System.out.println("NOT SAFE TO MOVE UP");
             //move = Move.UP;
