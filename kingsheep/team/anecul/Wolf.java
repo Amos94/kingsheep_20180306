@@ -9,6 +9,9 @@ public class Wolf extends UzhShortNameCreature {
     }
 
     protected void think(Type map[][]) {
+
+        char objective = '3';
+
 		/*
 		TODO
 		YOUR WOLF CODE HERE

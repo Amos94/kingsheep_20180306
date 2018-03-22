@@ -13,6 +13,13 @@ public abstract class UzhShortNameCreature extends Creature {
         super(type, parent, playerID, x, y);
     }
 
+    public int getManhattanDistance(int startX, int startY, int endX, int endY){
+
+        return Math.abs(startX - endX) + Math.abs(startY - endY);
+    }
+
+
+
 
 
     public String getNickname(){

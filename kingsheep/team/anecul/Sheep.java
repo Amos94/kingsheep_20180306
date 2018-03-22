@@ -1,6 +1,9 @@
 package kingsheep.team.anecul;
 
+import javafx.util.Pair;
 import kingsheep.*;
+
+import java.util.ArrayList;
 
 public class Sheep extends UzhShortNameCreature {
 
@@ -49,8 +52,6 @@ public class Sheep extends UzhShortNameCreature {
         //RIGHT => x+1, y
         //DOWN => x, y+1
         //LEFT => x-1, y
-        System.out.println("X: "+map[0].length);
-        System.out.println("Y: "+map.length);
 
         if(y-1 >= 0 && isSafe(map, x, y-1))
             toReturn[0] = true;
@@ -62,6 +63,23 @@ public class Sheep extends UzhShortNameCreature {
             toReturn[3] = true;
 
 
+
+        return toReturn;
+    }
+
+    public ArrayList<Pair<Integer,Integer>> getObjectivesCoordinates(String[] objectives, Type[][] map){
+        //xpos, ypos
+        ArrayList<Pair<Integer,Integer>> toReturn = new ArrayList<Pair<Integer, Integer>>();
+
+        for(int y=0; y<map.length; y++){
+            for(int x=0; x<map[0].length; x++) {
+                for (String obj : objectives) {
+                    if (map[y][x].toString() == obj) {
+                        toReturn.add(new Pair<Integer, Integer>(x,y));
+                    }
+                }
+            }
+        }
 
         return toReturn;
     }
@@ -81,12 +99,12 @@ public class Sheep extends UzhShortNameCreature {
     protected void think(Type map[][]) {
 
         //Set the objectives for the sheep
-        char objectives[] = new char[2];
-        objectives[0] = 'g';
-        objectives[1] = 'r';
+        String objectives[] = new String[2];
+        objectives[0] = "GRASS";
+        objectives[1] = "RHUBARB";
 
         System.out.println("UP: "+checkAdjcentSquares(map)[0] + "\tRIGHT: "+checkAdjcentSquares(map)[1]+ "\tDOWN: "+checkAdjcentSquares(map)[2]+ "\tLEFT: "+checkAdjcentSquares(map)[3]);
-
+        
 		/*
 		TODO
 		YOUR SHEEP CODE HERE
