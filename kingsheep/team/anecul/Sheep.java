@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import kingsheep.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Sheep extends UzhShortNameCreature {
 
@@ -102,6 +103,13 @@ public class Sheep extends UzhShortNameCreature {
         String objectives[] = new String[2];
         objectives[0] = "GRASS";
         objectives[1] = "RHUBARB";
+        ArrayList<Pair<Integer,Integer>> objectivesCoordinates = getObjectivesCoordinates(objectives, map);
+        HashMap<Pair<Integer,Integer>,Integer> listOfManhattanDistances = super.getObjectiveDistances(objectivesCoordinates);
+
+        for(Pair<Integer, Integer> pair:listOfManhattanDistances.keySet()){
+            System.out.println("Distance to x: "+pair.getKey()+", y: "+pair.getValue()+" is: "+listOfManhattanDistances.get(pair));
+        }
+
 
         System.out.println("UP: "+checkAdjcentSquares(map)[0] + "\tRIGHT: "+checkAdjcentSquares(map)[1]+ "\tDOWN: "+checkAdjcentSquares(map)[2]+ "\tLEFT: "+checkAdjcentSquares(map)[3]);
 
