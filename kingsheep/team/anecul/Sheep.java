@@ -104,7 +104,7 @@ public class Sheep extends UzhShortNameCreature {
         objectives[1] = "RHUBARB";
 
         System.out.println("UP: "+checkAdjcentSquares(map)[0] + "\tRIGHT: "+checkAdjcentSquares(map)[1]+ "\tDOWN: "+checkAdjcentSquares(map)[2]+ "\tLEFT: "+checkAdjcentSquares(map)[3]);
-        
+
 		/*
 		TODO
 		YOUR SHEEP CODE HERE
