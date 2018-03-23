@@ -76,8 +76,16 @@ public abstract class UzhShortNameCreature extends Creature {
         return this.y;
     }
 
+    //current state of the map
+    protected Type[][] currentStateOfTheMap(Type[][] map){
+        return map;
+    }
+
+
+    //implementation of A* algorithm (hopefully for the win)
     protected class AStar{
 
+        //this class represents squares of the map
         protected class Square{
 
             //The coordinates
