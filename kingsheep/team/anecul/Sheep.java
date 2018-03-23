@@ -103,13 +103,12 @@ public class Sheep extends UzhShortNameCreature {
         String objectives[] = new String[2];
         objectives[0] = "GRASS";
         objectives[1] = "RHUBARB";
+        //Coordinates of the objectives
         ArrayList<Pair<Integer,Integer>> objectivesCoordinates = getObjectivesCoordinates(objectives, map);
+        //Manhattan distance to objectives
         HashMap<Pair<Integer,Integer>,Integer> listOfManhattanDistances = super.getObjectiveDistances(objectivesCoordinates);
-
-        for(Pair<Integer, Integer> pair:listOfManhattanDistances.keySet()){
-            System.out.println("Distance to x: "+pair.getKey()+", y: "+pair.getValue()+" is: "+listOfManhattanDistances.get(pair));
-        }
-
+        //Sorted map of manhattan distance to the objectives
+        HashMap<Pair<Integer,Integer>, Integer> sortedListOfManhattanDistances = super.sortHashMap(listOfManhattanDistances);
 
         System.out.println("UP: "+checkAdjcentSquares(map)[0] + "\tRIGHT: "+checkAdjcentSquares(map)[1]+ "\tDOWN: "+checkAdjcentSquares(map)[2]+ "\tLEFT: "+checkAdjcentSquares(map)[3]);
 
