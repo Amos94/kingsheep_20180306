@@ -187,6 +187,10 @@ public abstract class UzhShortNameCreature extends Creature {
             }
         }
 
+        protected void AStarSearch(){
+            //to implement the A*
+        }
+
     }
 
 
