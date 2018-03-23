@@ -57,6 +57,25 @@ public abstract class UzhShortNameCreature extends Creature {
         return mapToReturn;
     }
 
+    //get maximum number of columns
+    public int getXSize(Type map[][]){
+        return map[0].length;
+    }
+    //get maximum number of rows
+    public int getYSize(Type map[][]){
+        return map.length;
+    }
+
+    //get current creature x position (column)
+    protected int getCurrentXPos(){
+        return this.x;
+    }
+
+    //get current creature y position (row)
+    protected int getCurrentYPos(){
+        return this.y;
+    }
+
     protected class AStar{
 
         protected class Square{
@@ -67,7 +86,7 @@ public abstract class UzhShortNameCreature extends Creature {
             //parent of the current square
             Square parent;
 
-            //The heuristic I use is Manhattand distance
+            //The heuristic I use is Manhattan distance
             int heuristicCost = 0;
             //The Final cost is the function F = G + H (Manhattan Distance)
             int finalCost = 0;
@@ -85,8 +104,29 @@ public abstract class UzhShortNameCreature extends Creature {
                 return "xPos: "+this.xPos+", yPos: "+this.yPos;
             }
 
-            
+
         }
+
+        PriorityQueue<Square> openQueue;
+        //start positions, initialised with the current position of the animal
+        int startXPos = getCurrentXPos();
+        int startYPos = getCurrentYPos();
+
+        //desired destination X and Y positions
+        int endXPosition, endYPosition;
+
+        //set the destination position
+        public void setDestination(int endXPosition, int endYPosition){
+            this.endXPosition = endXPosition;
+            this.endYPosition = endYPosition;
+        }
+
+        //set start positions
+        public void setStartPositions(int startXPos, int startYPos){
+            this.startXPos = startXPos;
+            this.startYPos = startYPos;
+        }
+
     }
 
 
