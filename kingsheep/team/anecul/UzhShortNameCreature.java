@@ -12,6 +12,8 @@ import java.util.*;
  */
 public abstract class UzhShortNameCreature extends Creature {
 
+    Type [][] currentMap;
+
     public UzhShortNameCreature(Type type, Simulator parent, int playerID, int x, int y) {
         super(type, parent, playerID, x, y);
     }
@@ -57,10 +59,16 @@ public abstract class UzhShortNameCreature extends Creature {
         return mapToReturn;
     }
 
+    //uptate the current state of the map
+    public void updateMap(Type[][] map){
+        this.currentMap = map;
+    }
+
     //get maximum number of columns
     public int getXSize(Type map[][]){
         return map[0].length;
     }
+
     //get maximum number of rows
     public int getYSize(Type map[][]){
         return map.length;
@@ -90,6 +98,7 @@ public abstract class UzhShortNameCreature extends Creature {
 
             //The coordinates
             int xPos, yPos;
+            Type type;
 
             //parent of the current square
             Square parent;
@@ -99,9 +108,17 @@ public abstract class UzhShortNameCreature extends Creature {
             //The Final cost is the function F = G + H (Manhattan Distance)
             int finalCost = 0;
 
+            //constructor
             protected Square(int xPos, int yPos){
                 this.xPos = xPos;
                 this.yPos = yPos;
+            }
+
+            //constructor
+            protected Square(int xPos, int yPos, Type type){
+                this.xPos = xPos;
+                this.yPos = yPos;
+                this.type = type;
             }
 
             protected Pair<Integer, Integer> getPositionPair(){
@@ -112,8 +129,27 @@ public abstract class UzhShortNameCreature extends Creature {
                 return "xPos: "+this.xPos+", yPos: "+this.yPos;
             }
 
+            //set the type of a square
+            protected void setType(Type type){
+                this.type = type;
+            }
+
+            //type of a square
+            protected Type getType(){
+                return type;
+            }
+
 
         }
+
+        //remake the map
+        //map size
+        int ySize = getYSize(currentMap); //rows
+        int xSize = getXSize(currentMap); //columns
+
+        Square [][]map = new Square[ySize][xSize];
+        boolean closed[][];
+
 
         PriorityQueue<Square> openQueue;
         //start positions, initialised with the current position of the animal
@@ -135,9 +171,23 @@ public abstract class UzhShortNameCreature extends Creature {
             this.startYPos = startYPos;
         }
 
+        protected void checkAndUpdateCost(Square current, Square newSquare, int cost){
+            if(newSquare.getType() == Type.FENCE || closed[newSquare.yPos][newSquare.xPos]) return;
+
+            int newSquareFinalCost = newSquare.heuristicCost + cost;
+
+            boolean isOpen = openQueue.contains(newSquare);
+
+            if(!isOpen || newSquareFinalCost < newSquare.finalCost){
+                newSquare.finalCost = newSquareFinalCost;
+                newSquare.parent = current;
+                if(!isOpen){
+                    openQueue.add(newSquare);
+                }
+            }
+        }
+
     }
-
-
 
 
 
