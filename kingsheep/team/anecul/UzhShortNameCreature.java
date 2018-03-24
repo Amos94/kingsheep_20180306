@@ -19,13 +19,13 @@ public abstract class UzhShortNameCreature extends Creature {
     }
 
     //Calculate Manhattan Distance
-    public int calculateManhattanDistance(int startX, int startY, int endX, int endY){
+    protected int calculateManhattanDistance(int startX, int startY, int endX, int endY){
 
         return Math.abs(startX - endX) + Math.abs(startY - endY);
     }
 
     //Get the manhattan distance between a creature, i.e. sheep/ wolf, and all the objectives, i.e. grass/ mushroom/ adversary sheep.
-    public HashMap<Pair<Integer, Integer>, Integer> getObjectiveDistances(ArrayList<Pair<Integer, Integer>> objCoordinates){
+    protected HashMap<Pair<Integer, Integer>, Integer> getObjectiveDistances(ArrayList<Pair<Integer, Integer>> objCoordinates){
 
         HashMap<Pair<Integer, Integer>, Integer> distanceToObjectives = new HashMap<Pair<Integer,Integer>, Integer>();
 
@@ -37,7 +37,7 @@ public abstract class UzhShortNameCreature extends Creature {
     }
 
     //sort the HashMap ASC
-    public HashMap<Pair<Integer, Integer>, Integer> sortHashMap(HashMap<Pair<Integer, Integer>, Integer> objCoordinates){
+    protected HashMap<Pair<Integer, Integer>, Integer> sortHashMap(HashMap<Pair<Integer, Integer>, Integer> objCoordinates){
 
         HashMap<Pair<Integer, Integer>, Integer> mapToReturn = new HashMap<Pair<Integer, Integer>, Integer>();
 
@@ -60,17 +60,17 @@ public abstract class UzhShortNameCreature extends Creature {
     }
 
     //uptate the current state of the map
-    public void updateMap(Type[][] map){
+    protected void updateMap(Type[][] map){
         this.currentMap = map;
     }
 
     //get maximum number of columns
-    public int getXSize(Type map[][]){
+    protected int getXSize(Type map[][]){
         return map[0].length;
     }
 
     //get maximum number of rows
-    public int getYSize(Type map[][]){
+    protected int getYSize(Type map[][]){
         return map.length;
     }
 
@@ -160,13 +160,13 @@ public abstract class UzhShortNameCreature extends Creature {
         int endXPosition, endYPosition;
 
         //set the destination position
-        public void setDestination(int endXPosition, int endYPosition){
+        protected void setDestination(int endXPosition, int endYPosition){
             this.endXPosition = endXPosition;
             this.endYPosition = endYPosition;
         }
 
         //set start positions
-        public void setStartPositions(int startXPos, int startYPos){
+        protected void setStartPositions(int startXPos, int startYPos){
             this.startXPos = startXPos;
             this.startYPos = startYPos;
         }
@@ -189,6 +189,27 @@ public abstract class UzhShortNameCreature extends Creature {
 
         protected void AStarSearch(){
             //to implement the A*
+            openQueue.add(map[startYPos][startXPos]);
+
+            Square current;
+
+            while(true){
+                current = openQueue.poll();
+                if(current.type == Type.FENCE){
+                    break;
+                }
+                closed[current.yPos][current.xPos] = true;
+
+                if(current.equals(map[endYPosition][endXPosition])){
+                    return;
+                }
+
+                Square s;
+                
+
+
+            }
+
         }
 
     }
