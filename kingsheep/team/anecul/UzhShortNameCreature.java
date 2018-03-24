@@ -93,6 +93,7 @@ public abstract class UzhShortNameCreature extends Creature {
     //implementation of A* algorithm (hopefully for the win)
     protected class AStar{
 
+
         //this class represents squares of the map
         protected class Square{
 
@@ -141,6 +142,9 @@ public abstract class UzhShortNameCreature extends Creature {
 
 
         }
+
+        //The cost of each move
+        int costPerMove = 1;
 
         //remake the map
         //map size
@@ -205,9 +209,26 @@ public abstract class UzhShortNameCreature extends Creature {
                 }
 
                 Square s;
-                
 
+                if(current.yPos - 1 >= 0){
+                    s = map[current.yPos][current.xPos];
+                    checkAndUpdateCost(current, s, current.finalCost+costPerMove);
+                }
 
+                if(current.xPos-1>=0){
+                    s = map[current.yPos][current.xPos-1];
+                    checkAndUpdateCost(current, s, current.finalCost+costPerMove);
+                }
+
+                if(current.xPos+1<map[0].length){
+                    s = map[current.yPos][current.xPos+1];
+                    checkAndUpdateCost(current, s, current.finalCost+costPerMove);
+                }
+
+                if(current.yPos+1<map.length) {
+                    s = map[current.yPos + 1][current.xPos];
+                    checkAndUpdateCost(current, s, current.finalCost + costPerMove);
+                }
             }
 
         }
