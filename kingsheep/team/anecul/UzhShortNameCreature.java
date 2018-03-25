@@ -175,9 +175,17 @@ public abstract class UzhShortNameCreature extends Creature {
             this.startYPos = startYPos;
         }
 
+        protected void setBlocked(int xPos, int yPos){
+            map[yPos][xPos] = null;
+        }
+
         protected void checkAndUpdateCost(Square current, Square newSquare, int cost){
             if(newSquare.getType() == Type.FENCE || closed[newSquare.yPos][newSquare.xPos]) return;
 
+            //set the heuristic cost of square
+            newSquare.heuristicCost = calculateManhattanDistance(newSquare.xPos, newSquare.yPos, endXPosition, endYPosition);
+
+            //update the final cost
             int newSquareFinalCost = newSquare.heuristicCost + cost;
 
             boolean isOpen = openQueue.contains(newSquare);
@@ -210,30 +218,117 @@ public abstract class UzhShortNameCreature extends Creature {
 
                 Square s;
 
+                //UP
                 if(current.yPos - 1 >= 0){
                     s = map[current.yPos][current.xPos];
                     checkAndUpdateCost(current, s, current.finalCost+costPerMove);
                 }
 
+                //DOWN
+                if(current.yPos+1<map.length) {
+                    s = map[current.yPos + 1][current.xPos];
+                    checkAndUpdateCost(current, s, current.finalCost + costPerMove);
+                }
+
+                //LEFT
                 if(current.xPos-1>=0){
                     s = map[current.yPos][current.xPos-1];
                     checkAndUpdateCost(current, s, current.finalCost+costPerMove);
                 }
 
+                //RIGHT
                 if(current.xPos+1<map[0].length){
                     s = map[current.yPos][current.xPos+1];
                     checkAndUpdateCost(current, s, current.finalCost+costPerMove);
-                }
-
-                if(current.yPos+1<map.length) {
-                    s = map[current.yPos + 1][current.xPos];
-                    checkAndUpdateCost(current, s, current.finalCost + costPerMove);
                 }
             }
 
         }
 
+        public ArrayList<Square> searchWithAStar(int x, int y, int si, int sj, int ei, int ej, int[][] blocked){
+
+            ArrayList<Square> toReturn = new ArrayList<Square>();
+            //Initialize a new search
+            map = new Square[x][y];
+            closed = new boolean[x][y];
+
+            openQueue = new PriorityQueue<>((Object o1, Object o2) -> {
+                Square c1 = (Square)o1;
+                Square c2 = (Square)o2;
+
+                return c1.finalCost<c2.finalCost?-1:
+                        c1.finalCost>c2.finalCost?1:0;
+            });
+
+            //Set start positions
+            setStartPositions(si, sj);  //Setting to 0,0 by default. Will be useful for the UI part
+
+            //Set destinations
+            setDestination(ei, ej);
+
+            for(int i=0;i<x;++i){
+                for(int j=0;j<y;++j){
+                    map[i][j] = new Square(i, j);
+                    map[i][j].heuristicCost = Math.abs(i-endYPosition)+Math.abs(j-endXPosition);
+//                  System.out.print(grid[i][j].heuristicCost+" ");
+                }
+//              System.out.println();
+            }
+            map[si][sj].finalCost = 0;
+
+           /*
+             Set blocked cells. Simply set the cell values to null
+             for blocked cells.
+           */
+            for(int i=0;i<blocked.length;++i){
+                setBlocked(blocked[i][0], blocked[i][1]);
+            }
+
+            //Display initial map
+            System.out.println("Grid: ");
+            for(int i=0;i<x;++i){
+                for(int j=0;j<y;++j){
+                    if(i==si&&j==sj)System.out.print("SO  "); //Source
+                    else if(i==ei && j==ej)System.out.print("DE  ");  //Destination
+                    else if(map[i][j]!=null)System.out.printf("%-3d ", 0);
+                    else System.out.print("BL  ");
+                }
+                System.out.println();
+            }
+            System.out.println();
+
+            AStarSearch();
+            System.out.println("\nScores for cells: ");
+            for(int i=0;i<x;++i){
+                for(int j=0;j<x;++j){
+                    if(map[i][j]!=null)System.out.printf("%-3d ", map[i][j].finalCost);
+                    else System.out.print("BL  ");
+                }
+                System.out.println();
+            }
+            System.out.println();
+
+            if(closed[endYPosition][endXPosition]){
+                //Trace back the path
+                System.out.println("Path: ");
+                Square current = map[endYPosition][endXPosition];
+                System.out.print(current);
+                while(current.parent!=null){
+                    System.out.print(" -> "+current.parent);
+                    toReturn.add(current.parent);
+                    current = current.parent;
+                }
+                System.out.println();
+            }else System.out.println("No possible path");
+
+            return toReturn;
+        }
+
     }
+
+
+
+
 
 
 
