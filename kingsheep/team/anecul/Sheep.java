@@ -128,14 +128,30 @@ public class Sheep extends UzhShortNameCreature {
         move = Move.RIGHT;
         move = Move.WAIT;
 		*/
+        AStar as = new AStar(map);
 
-		HashMap<ArrayList<AStar.Square>, Integer> paths = new HashMap<ArrayList<AStar.Square>,Integer>;
-//to solve
-		for(Pair<Integer,Integer> objective:objectivesCoordinates){
-		    ArrayList<AStar.Square> path = new ArrayList<AStar.Square>();
-		    path.add(new AStar().searchWithAStar(map, y, x, objective.getValue(), objective.getKey(), {0,0}));
-            paths.put(path, path.size());
-        }
+//		HashMap<ArrayList<AStar.Square>, Integer> paths = new HashMap<ArrayList<AStar.Square>,Integer>();
+////to solve
+//		for(Pair<Integer,Integer> objective:objectivesCoordinates){
+//		    ArrayList<AStar.Square> path = new ArrayList<AStar.Square>();
+//
+//		    int blocked[][] = new int[map.length][map[0].length];
+//		    for(int i=0; i<map.length; ++i){
+//		        for(int j=0; j<map[0].length; ++j) {
+//                    if (map[i][j] == Type.FENCE || map[i][j] == Type.WOLF1 || map[i][j] == Type.WOLF2) {
+//                        blocked[i][j] = -1;
+//                    }
+//                    else {
+//                        blocked[i][j] = 0;
+//                    }
+//                }
+//            }
+//
+//            AStar asc = new AStar(map);
+//
+//		    //path = as.searchWithAStar(map, x, y, objective.getKey(), objective.getValue(), blocked);
+//            //paths.put(path, path.size());
+//        }
 
 		try {
             if (checkAdjcentSquares(map)[1])

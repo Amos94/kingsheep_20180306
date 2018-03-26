@@ -12,7 +12,7 @@ import java.util.*;
  */
 public abstract class UzhShortNameCreature extends Creature {
 
-    Type [][] currentMap;
+    public Type [][] currentMap;
 
     public UzhShortNameCreature(Type type, Simulator parent, int playerID, int x, int y) {
         super(type, parent, playerID, x, y);
@@ -83,6 +83,9 @@ public abstract class UzhShortNameCreature extends Creature {
     protected int getCurrentYPos(){
         return this.y;
     }
+    protected Type[][] getCurrentMap(){
+        return this.currentMap;
+    }
 
     //current state of the map
     protected Type[][] currentStateOfTheMap(Type[][] map){
@@ -92,9 +95,19 @@ public abstract class UzhShortNameCreature extends Creature {
 
     //implementation of A* algorithm (hopefully for the win)
     protected class AStar{
-
+        Type [][] m;
         protected AStar(){
             System.out.println("");
+        }
+
+        protected AStar(Type[][] map){
+            this.m = map;
+            for(int i=0; i<m.length;++i){
+                for(int j=0; j<m[0].length; ++j){
+                    System.out.print(m[i][j]+" ");
+                }
+                System.out.println("");
+            }
         }
         //this class represents squares of the map
         protected class Square{
@@ -150,8 +163,9 @@ public abstract class UzhShortNameCreature extends Creature {
 
         //remake the map
         //map size
-        int ySize = getYSize(currentMap); //rows
-        int xSize = getXSize(currentMap); //columns
+
+        int ySize = getYSize(m); //rows
+        int xSize = getXSize(m); //columns
 
         Square [][]map = new Square[ySize][xSize];
         boolean closed[][];
