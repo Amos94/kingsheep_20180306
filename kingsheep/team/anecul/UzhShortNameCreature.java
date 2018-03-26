@@ -93,7 +93,9 @@ public abstract class UzhShortNameCreature extends Creature {
     //implementation of A* algorithm (hopefully for the win)
     protected class AStar{
 
-
+        protected AStar(){
+            System.out.println("");
+        }
         //this class represents squares of the map
         protected class Square{
 
@@ -245,10 +247,14 @@ public abstract class UzhShortNameCreature extends Creature {
 
         }
 
-        public ArrayList<Square> searchWithAStar(int x, int y, int si, int sj, int ei, int ej, int[][] blocked){
+        public ArrayList<Square> searchWithAStar(Type[][] currentStateOfMap, int si, int sj, int ei, int ej, int[][] blocked){
 
             ArrayList<Square> toReturn = new ArrayList<Square>();
             //Initialize a new search
+
+            x = currentStateOfMap[0].length;
+            y = currentStateOfMap.length;
+
             map = new Square[x][y];
             closed = new boolean[x][y];
 
@@ -268,7 +274,7 @@ public abstract class UzhShortNameCreature extends Creature {
 
             for(int i=0;i<x;++i){
                 for(int j=0;j<y;++j){
-                    map[i][j] = new Square(i, j);
+                    map[i][j] = new Square(i, j, currentStateOfMap[i][j]);
                     map[i][j].heuristicCost = Math.abs(i-endYPosition)+Math.abs(j-endXPosition);
 //                  System.out.print(grid[i][j].heuristicCost+" ");
                 }

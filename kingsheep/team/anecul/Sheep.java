@@ -90,7 +90,7 @@ public class Sheep extends UzhShortNameCreature {
 
         Type type = map[y][x];
 
-        if(type == type.FENCE || type == type.WOLF2 || type == type.SHEEP2 || type == type.WOLF1)
+        if(type == type.FENCE || type == type.WOLF2 || type == type.SHEEP2 || type == type.SHEEP1  || type == type.WOLF1)
             return false;
 
         return true;
@@ -128,6 +128,15 @@ public class Sheep extends UzhShortNameCreature {
         move = Move.RIGHT;
         move = Move.WAIT;
 		*/
+
+		HashMap<ArrayList<AStar.Square>, Integer> paths = new HashMap<ArrayList<AStar.Square>,Integer>;
+//to solve
+		for(Pair<Integer,Integer> objective:objectivesCoordinates){
+		    ArrayList<AStar.Square> path = new ArrayList<AStar.Square>();
+		    path.add(new AStar().searchWithAStar(map, y, x, objective.getValue(), objective.getKey(), {0,0}));
+            paths.put(path, path.size());
+        }
+
 		try {
             if (checkAdjcentSquares(map)[1])
                 move = Move.RIGHT;
