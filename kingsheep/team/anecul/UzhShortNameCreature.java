@@ -96,18 +96,24 @@ public abstract class UzhShortNameCreature extends Creature {
     //implementation of A* algorithm (hopefully for the win)
     protected class AStar{
         Type [][] m;
+        public int xSize;
+        public int ySize;
         protected AStar(){
             System.out.println("");
         }
 
-        protected AStar(Type[][] map){
+        protected AStar(Type[][] map, int xSize, int ySize){
             this.m = map;
-            for(int i=0; i<m.length;++i){
-                for(int j=0; j<m[0].length; ++j){
-                    System.out.print(m[i][j]+" ");
-                }
-                System.out.println("");
-            }
+            this.xSize = xSize;
+            this.ySize = ySize;
+
+//            for(int i=0; i<m.length;++i){
+//                for(int j=0; j<m[0].length; ++j){
+//                    System.out.print(m[i][j]+" ");
+//                }
+//                System.out.println("");
+//            }
+//            System.out.println("");                System.out.println("");                System.out.println("");
         }
         //this class represents squares of the map
         protected class Square{
@@ -163,9 +169,9 @@ public abstract class UzhShortNameCreature extends Creature {
 
         //remake the map
         //map size
-
-        int ySize = getYSize(m); //rows
-        int xSize = getXSize(m); //columns
+//
+//        int ySize = this.ySize;//getYSize(m); //rows
+//        int xSize = this.xSize;//getXSize(m); //columns
 
         Square [][]map = new Square[ySize][xSize];
         boolean closed[][];
@@ -286,8 +292,8 @@ public abstract class UzhShortNameCreature extends Creature {
             //Set destinations
             setDestination(ei, ej);
 
-            for(int i=0;i<x;++i){
-                for(int j=0;j<y;++j){
+            for(int i=0;i<y;++i){
+                for(int j=0;j<x;++j){
                     map[i][j] = new Square(i, j, currentStateOfMap[i][j]);
                     map[i][j].heuristicCost = Math.abs(i-endYPosition)+Math.abs(j-endXPosition);
 //                  System.out.print(grid[i][j].heuristicCost+" ");
