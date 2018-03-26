@@ -274,9 +274,11 @@ public abstract class UzhShortNameCreature extends Creature {
 
             x = currentStateOfMap[0].length;
             y = currentStateOfMap.length;
+//            System.out.println(y);
+//            System.out.println(x);
 
-            map = new Square[x][y];
-            closed = new boolean[x][y];
+            map = new Square[y][x];
+            closed = new boolean[y][x];
 
             openQueue = new PriorityQueue<>((Object o1, Object o2) -> {
                 Square c1 = (Square)o1;
@@ -294,6 +296,7 @@ public abstract class UzhShortNameCreature extends Creature {
 
             for(int i=0;i<y;++i){
                 for(int j=0;j<x;++j){
+
                     map[i][j] = new Square(i, j, currentStateOfMap[i][j]);
                     map[i][j].heuristicCost = Math.abs(i-endYPosition)+Math.abs(j-endXPosition);
 //                  System.out.print(grid[i][j].heuristicCost+" ");
@@ -307,7 +310,9 @@ public abstract class UzhShortNameCreature extends Creature {
              for blocked cells.
            */
             for(int i=0;i<blocked.length;++i){
-                setBlocked(blocked[i][0], blocked[i][1]);
+                for(int j=0; j<blocked[0].length; ++j)
+                    if(blocked[i][j] == -1)
+                        setBlocked(i, j);
             }
 
             //Display initial map
