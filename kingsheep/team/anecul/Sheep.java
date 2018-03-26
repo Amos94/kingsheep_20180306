@@ -147,7 +147,12 @@ public class Sheep extends UzhShortNameCreature {
                 }
             }
 
+
+
             AStar asc = new AStar(map, map[0].length, map.length);
+
+		    System.out.println("X: "+x);
+		    System.out.println("Y: "+y);
 
 		    path = asc.searchWithAStar(map, x, y, objective.getKey(), objective.getValue(), blocked);
             paths.put(path, path.size());

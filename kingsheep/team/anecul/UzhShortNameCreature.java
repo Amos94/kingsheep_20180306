@@ -198,7 +198,11 @@ public abstract class UzhShortNameCreature extends Creature {
         }
 
         protected void setBlocked(int xPos, int yPos){
-            map[yPos][xPos] = null;
+//            System.out.println("x: " + xPos);
+//
+//            System.out.println("y "+yPos);
+//            System.out.println("------");
+            map[xPos][yPos] = null;
         }
 
         protected void checkAndUpdateCost(Square current, Square newSquare, int cost){
@@ -267,15 +271,18 @@ public abstract class UzhShortNameCreature extends Creature {
 
         }
 
-        public ArrayList<Square> searchWithAStar(Type[][] currentStateOfMap, int si, int sj, int ei, int ej, int[][] blocked){
+        public ArrayList<Square> searchWithAStar(Type[][] currentStateOfMap, int startXPos, int startYPos, int endXPos, int endYPos, int[][] blocked){
 
             ArrayList<Square> toReturn = new ArrayList<Square>();
             //Initialize a new search
 
             x = currentStateOfMap[0].length;
             y = currentStateOfMap.length;
-//            System.out.println(y);
-//            System.out.println(x);
+
+            System.out.println("Start X POS: "+ startXPos);
+            System.out.println("Start Y POS: "+startYPos);
+            System.out.println("END X POS: "+endXPos);
+            System.out.println("END Y POS: "+endYPos);
 
             map = new Square[y][x];
             closed = new boolean[y][x];
@@ -289,21 +296,24 @@ public abstract class UzhShortNameCreature extends Creature {
             });
 
             //Set start positions
-            setStartPositions(si, sj);  //Setting to 0,0 by default. Will be useful for the UI part
+            setStartPositions(startXPos, startYPos);  //Setting to 0,0 by default. Will be useful for the UI part
 
             //Set destinations
-            setDestination(ei, ej);
+            setDestination(endXPos, endYPos);
 
             for(int i=0;i<y;++i){
                 for(int j=0;j<x;++j){
 
                     map[i][j] = new Square(i, j, currentStateOfMap[i][j]);
                     map[i][j].heuristicCost = Math.abs(i-endYPosition)+Math.abs(j-endXPosition);
-//                  System.out.print(grid[i][j].heuristicCost+" ");
+                    //System.out.print("HEURISTIC COST: "+map[i][j].heuristicCost+" ");
                 }
-//              System.out.println();
+
             }
-            map[si][sj].finalCost = 0;
+//            System.out.println("si:" + si);
+//            System.out.println("sj" + sj);
+//            System.out.println("----");
+            map[startYPos][startXPos].finalCost = 0;
 
            /*
              Set blocked cells. Simply set the cell values to null
@@ -317,11 +327,11 @@ public abstract class UzhShortNameCreature extends Creature {
 
             //Display initial map
             System.out.println("Grid: ");
-            for(int i=0;i<x;++i){
-                for(int j=0;j<y;++j){
-                    if(i==si&&j==sj)System.out.print("SO  "); //Source
-                    else if(i==ei && j==ej)System.out.print("DE  ");  //Destination
-                    else if(map[i][j]!=null)System.out.printf("%-3d ", 0);
+            for(int i=0;i<y;++i){
+                for(int j=0;j<x;++j){
+                    if(i==startYPos&&j==startXPos)System.out.print("SO  "); //Source
+                    else if(i==endYPos && j==endXPos)System.out.print("DE  ");  //Destination
+                    else if(map[i][j]!= null)System.out.printf("%-3d ", 0);
                     else System.out.print("BL  ");
                 }
                 System.out.println();
@@ -330,7 +340,7 @@ public abstract class UzhShortNameCreature extends Creature {
 
             AStarSearch();
             System.out.println("\nScores for cells: ");
-            for(int i=0;i<x;++i){
+            for(int i=0;i<y;++i){
                 for(int j=0;j<x;++j){
                     if(map[i][j]!=null)System.out.printf("%-3d ", map[i][j].finalCost);
                     else System.out.print("BL  ");
