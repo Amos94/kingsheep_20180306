@@ -92,7 +92,11 @@ public abstract class UzhShortNameCreature extends Creature {
         return map;
     }
 
+    protected Type getNodeType(int nodeTypeXPos, int nodeTypeYPos){
+        return this.currentMap[nodeTypeYPos][nodeTypeXPos];
+    }
 
+/*
     //implementation of A* algorithm (hopefully for the win)
     protected class AStar{
         Type [][] m;
@@ -209,7 +213,7 @@ public abstract class UzhShortNameCreature extends Creature {
             if(newSquare.getType() == Type.FENCE || closed[newSquare.yPos][newSquare.xPos]) return;
 
             //set the heuristic cost of square
-            newSquare.heuristicCost = calculateManhattanDistance(newSquare.xPos, newSquare.yPos, endXPosition, endYPosition);
+            //newSquare.heuristicCost = calculateManhattanDistance(newSquare.xPos, newSquare.yPos, endXPosition, endYPosition);
 
             //update the final cost
             int newSquareFinalCost = newSquare.heuristicCost + cost;
@@ -247,45 +251,47 @@ public abstract class UzhShortNameCreature extends Creature {
                 //UP
                 if(current.yPos - 1 >= 0){
                     s = map[current.yPos][current.xPos];
+                    //System.out.println("UP\n"+"X POS: "+ s.xPos+",\nY POS: "+s.yPos+",\nTYPE: "+s.type+"\n-----");
                     checkAndUpdateCost(current, s, current.finalCost+costPerMove);
                 }
 
                 //DOWN
                 if(current.yPos+1<map.length) {
                     s = map[current.yPos + 1][current.xPos];
+                    //System.out.println("DOWN\n"+"X POS: "+ s.xPos+",\nY POS: "+s.yPos+",\nTYPE: "+s.type+"\n-----");
                     checkAndUpdateCost(current, s, current.finalCost + costPerMove);
                 }
 
                 //LEFT
                 if(current.xPos-1>=0){
                     s = map[current.yPos][current.xPos-1];
+                    //System.out.println("LEFT\n"+"X POS: "+ s.xPos+",\nY POS: "+s.yPos+",\nTYPE: "+s.type+"\n-----");
                     checkAndUpdateCost(current, s, current.finalCost+costPerMove);
                 }
 
                 //RIGHT
                 if(current.xPos+1<map[0].length){
                     s = map[current.yPos][current.xPos+1];
+                    //System.out.println("RIGHT\n"+"X POS: "+ s.xPos+",\nY POS: "+s.yPos+",\nTYPE: "+s.type+"\n-----");
                     checkAndUpdateCost(current, s, current.finalCost+costPerMove);
                 }
             }
 
         }
 
-        public ArrayList<Square> searchWithAStar(Type[][] currentStateOfMap, int startXPos, int startYPos, int endXPos, int endYPos, int[][] blocked){
+        public ArrayList<Square> searchWithAStar(Type[][] currentStateOfMap, int currentStartXPos, int currentStartYPos, int endXPos, int endYPos, int[][] blocked){
 
             ArrayList<Square> toReturn = new ArrayList<Square>();
             //Initialize a new search
 
-            x = currentStateOfMap[0].length;
-            y = currentStateOfMap.length;
 
-            System.out.println("Start X POS: "+ startXPos);
-            System.out.println("Start Y POS: "+startYPos);
-            System.out.println("END X POS: "+endXPos);
-            System.out.println("END Y POS: "+endYPos);
+//            System.out.println("Start X POS: "+ currentStartXPos);
+//            System.out.println("Start Y POS: "+currentStartYPos);
+//            System.out.println("END X POS: "+endXPos);
+//            System.out.println("END Y POS: "+endYPos);
 
-            map = new Square[y][x];
-            closed = new boolean[y][x];
+            map = new Square[currentStateOfMap.length][currentStateOfMap[0].length];
+            closed = new boolean[currentStateOfMap.length][currentStateOfMap[0].length];
 
             openQueue = new PriorityQueue<>((Object o1, Object o2) -> {
                 Square c1 = (Square)o1;
@@ -296,13 +302,13 @@ public abstract class UzhShortNameCreature extends Creature {
             });
 
             //Set start positions
-            setStartPositions(startXPos, startYPos);  //Setting to 0,0 by default. Will be useful for the UI part
+            setStartPositions(currentStartXPos, currentStartYPos);  //Setting to 0,0 by default. Will be useful for the UI part
 
             //Set destinations
             setDestination(endXPos, endYPos);
 
-            for(int i=0;i<y;++i){
-                for(int j=0;j<x;++j){
+            for(int i=0;i<currentStateOfMap.length;++i){
+                for(int j=0;j<currentStateOfMap[0].length;++j){
 
                     map[i][j] = new Square(i, j, currentStateOfMap[i][j]);
                     map[i][j].heuristicCost = Math.abs(i-endYPosition)+Math.abs(j-endXPosition);
@@ -313,12 +319,12 @@ public abstract class UzhShortNameCreature extends Creature {
 //            System.out.println("si:" + si);
 //            System.out.println("sj" + sj);
 //            System.out.println("----");
-            map[startYPos][startXPos].finalCost = 0;
+            map[currentStartYPos][currentStartXPos].finalCost = 0;
 
-           /*
-             Set blocked cells. Simply set the cell values to null
-             for blocked cells.
-           */
+
+//             Set blocked cells. Simply set the cell values to null
+//             for blocked cells.
+
             for(int i=0;i<blocked.length;++i){
                 for(int j=0; j<blocked[0].length; ++j)
                     if(blocked[i][j] == -1)
@@ -326,36 +332,36 @@ public abstract class UzhShortNameCreature extends Creature {
             }
 
             //Display initial map
-            System.out.println("Grid: ");
-            for(int i=0;i<y;++i){
-                for(int j=0;j<x;++j){
-                    if(i==startYPos&&j==startXPos)System.out.print("SO  "); //Source
-                    else if(i==endYPos && j==endXPos)System.out.print("DE  ");  //Destination
-                    else if(map[i][j]!= null)System.out.printf("%-3d ", 0);
-                    else System.out.print("BL  ");
-                }
-                System.out.println();
-            }
-            System.out.println();
+//            System.out.println("Grid: ");
+//            for(int i=0;i<currentStateOfMap.length;++i){
+//                for(int j=0;j<currentStateOfMap[0].length;++j){
+//                    if(i==currentStartYPos&&j==currentStartXPos)System.out.print("SO  "); //Source
+//                    else if(i==endYPos && j==endXPos)System.out.print("DE  ");  //Destination
+//                    else if(map[i][j]!= null)System.out.printf("%-3d ", 0);
+//                    else System.out.print("BL  ");
+//                }
+//                System.out.println();
+//            }
+//            System.out.println();
 
             AStarSearch();
-            System.out.println("\nScores for cells: ");
-            for(int i=0;i<y;++i){
-                for(int j=0;j<x;++j){
-                    if(map[i][j]!=null)System.out.printf("%-3d ", map[i][j].finalCost);
-                    else System.out.print("BL  ");
-                }
-                System.out.println();
-            }
-            System.out.println();
+//            System.out.println("\nScores for cells: ");
+//            for(int i=0;i<currentStateOfMap.length;++i){
+//                for(int j=0;j<currentStateOfMap[0].length;++j){
+//                    if(map[i][j]!=null)System.out.printf("%-3d ", map[i][j].finalCost);
+//                    else System.out.print("BL  ");
+//                }
+//                System.out.println();
+//            }
+//            System.out.println();
 
             if(closed[endYPosition][endXPosition]){
                 //Trace back the path
-                System.out.println("Path: ");
+                //System.out.println("Path: ");
                 Square current = map[endYPosition][endXPosition];
-                System.out.print(current);
+                //System.out.print("XPOS: "+current.parent.xPos+" YPOS: "+current.yPos+" TYPE: "+current.type);
                 while(current.parent!=null){
-                    System.out.print(" -> "+current.parent);
+                    //System.out.print(" -> XPOS: "+current.parent.xPos+" YPOS: "+current.yPos+" TYPE: "+current.type);
                     toReturn.add(current.parent);
                     current = current.parent;
                 }
@@ -367,9 +373,199 @@ public abstract class UzhShortNameCreature extends Creature {
 
     }
 
+*/
+
+    public class AStarNode implements Comparable {
+
+        AStarNode pathParent;
+        float costFromStart;
+        float estimatedCostToGoal;
+        protected int xPos;
+        protected int yPos;
+        protected Type nodeType;
+        protected Type[][] currentMapState;
+
+        public AStarNode(int x, int y, Type type, Type[][] currentMapState){
+            this.xPos = x;
+            this.yPos = y;
+            this.nodeType = type;
+            this.currentMapState = currentMapState;
+
+        }
+
+
+        public float getCost() {
+            return costFromStart + estimatedCostToGoal;
+        }
+
+
+        public int compareTo(Object other) {
+            float thisValue = this.getCost();
+            float otherValue = ((AStarNode)other).getCost();
+
+            float v = thisValue - otherValue;
+            return (v>0)?1:(v<0)?-1:0; // sign function
+        }
+
+
+        /**
+         Gets the cost between this node and the specified
+         adjacent (AKA "neighbor" or "child") node.
+         */
+        public float getCost(AStarNode node){
+            return costFromStart + 1;
+        }
+
+
+        /**
+         Gets the estimated cost between this node and the
+         specified node. The estimated cost should never exceed
+         the true cost. The better the estimate, the more
+         effecient the search.
+         */
+        public float getEstimatedCost(AStarNode node){
+            return calculateManhattanDistance(this.xPos, this.yPos, node.xPos, node.yPos);
+        }
+
+
+        /**
+         Gets the children (AKA "neighbors" or "adjacent nodes")
+         of this node.
+         */
+        public List getNeighbors(){
+            List<AStarNode> toReturn = new ArrayList<AStarNode>();
+
+            if(this.yPos-1 > 0) {
+                Type typeOfTheNeighbourNode = this.currentMapState[this.yPos-1][this.xPos];
+                toReturn.add(new AStarNode(this.xPos, this.yPos - 1, typeOfTheNeighbourNode, this.currentMapState));
+            }
+
+            if(this.xPos-1 > 0) {
+                Type typeOfTheNeighbourNode = this.currentMapState[this.yPos][this.xPos-1];
+                toReturn.add(new AStarNode(this.xPos-1, this.yPos, typeOfTheNeighbourNode, this.currentMapState));
+            }
+
+            if(this.yPos < this.currentMapState.length) {
+                Type typeOfTheNeighbourNode = this.currentMapState[this.yPos+1][this.xPos];
+                toReturn.add(new AStarNode(this.xPos, this.yPos + 1, typeOfTheNeighbourNode, this.currentMapState));
+            }
+
+            if(this.xPos+1 < this.currentMapState[0].length) {
+                Type typeOfTheNeighbourNode = this.currentMapState[this.yPos][this.xPos+1];
+                toReturn.add(new AStarNode(this.xPos + 1, this.yPos, typeOfTheNeighbourNode, this.currentMapState));
+            }
 
 
 
+            return toReturn;
+        }
+    }
+
+    public class AStarSearch {
+
+
+        public AStarSearch(){
+
+        }
+        /**
+         A simple priority list, also called a priority queue.
+         Objects in the list are ordered by their priority,
+         determined by the object's Comparable interface.
+         The highest priority item is first in the list.
+         */
+        public class PriorityList extends LinkedList {
+
+            public void add(Comparable object) {
+                for (int i=0; i<size(); i++) {
+                    if (object.compareTo(get(i)) <= 0) {
+                        add(i, object);
+                        return;
+                    }
+                }
+                addLast(object);
+            }
+        }
+
+
+        /**
+         Construct the path, not including the start node.
+         */
+        protected List constructPath(AStarNode node) {
+            LinkedList path = new LinkedList();
+            while (node.pathParent != null) {
+                path.addFirst(node);
+                node = node.pathParent;
+            }
+            return path;
+        }
+
+
+        /**
+         Find the path from the start node to the end node. A list
+         of AStarNodes is returned, or null if the path is not
+         found.
+         */
+        public List findPath(AStarNode startNode, AStarNode goalNode) {
+
+            PriorityList openList = new PriorityList();
+            LinkedList<AStarNode> closedList = new LinkedList();
+
+            startNode.costFromStart = 0;
+            startNode.estimatedCostToGoal = startNode.getEstimatedCost(goalNode);
+//            System.out.println("Estimated cost = "+startNode.estimatedCostToGoal);
+            startNode.pathParent = null;
+            openList.add(startNode);
+
+
+            while (!openList.isEmpty()) {
+                AStarNode node = (AStarNode)openList.removeFirst();
+
+
+                if (node == goalNode) {
+                    // construct the path from start to goal
+                    System.out.println("here");
+                    return constructPath(goalNode);
+                }
+
+                List neighbors = node.getNeighbors();
+                for (int i=0; i<neighbors.size(); i++) {
+                    AStarNode neighborNode =
+                            (AStarNode)neighbors.get(i);
+                    boolean isOpen = openList.contains(neighborNode);
+                    boolean isClosed =
+                            closedList.contains(neighborNode);
+                    float costFromStart = node.costFromStart +
+                            node.getCost(neighborNode);
+
+
+                    // check if the neighbor node has not been
+                    // traversed or if a shorter path to this
+                    // neighbor node is found.
+                    if ((!isOpen && !isClosed) ||
+                            costFromStart < neighborNode.costFromStart)
+                    {
+                        neighborNode.pathParent = node;
+                        neighborNode.costFromStart = costFromStart;
+                        neighborNode.estimatedCostToGoal = neighborNode.getEstimatedCost(goalNode);
+                        if (isClosed) {
+                            closedList.remove(neighborNode);
+                        }
+                        if (!isOpen) {
+                            openList.add(neighborNode);
+                        }
+                    }
+                }
+                closedList.add(node);
+
+            }
+
+            // no path found
+            return null;
+        }
+
+
+
+    }
 
 
 

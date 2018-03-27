@@ -5,12 +5,14 @@ import kingsheep.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Sheep extends UzhShortNameCreature {
 
 
     public Sheep(Type type, Simulator parent, int playerID, int x, int y) {
         super(type, parent, playerID, x, y);
+
 
     }
 
@@ -110,7 +112,7 @@ public class Sheep extends UzhShortNameCreature {
         //Sorted map of manhattan distance to the objectives
         HashMap<Pair<Integer,Integer>, Integer> sortedListOfManhattanDistances = super.sortHashMap(listOfManhattanDistances);
 
-        System.out.println("UP: "+checkAdjcentSquares(map)[0] + "\tRIGHT: "+checkAdjcentSquares(map)[1]+ "\tDOWN: "+checkAdjcentSquares(map)[2]+ "\tLEFT: "+checkAdjcentSquares(map)[3]);
+        //System.out.println("UP: "+checkAdjcentSquares(map)[0] + "\tRIGHT: "+checkAdjcentSquares(map)[1]+ "\tDOWN: "+checkAdjcentSquares(map)[2]+ "\tLEFT: "+checkAdjcentSquares(map)[3]);
 
 		/*
 		TODO
@@ -128,45 +130,88 @@ public class Sheep extends UzhShortNameCreature {
         move = Move.RIGHT;
         move = Move.WAIT;
 		*/
-        //AStar as = new AStar(map, map[0].length, map.length);
 
-		HashMap<ArrayList<AStar.Square>, Integer> paths = new HashMap<ArrayList<AStar.Square>,Integer>();
-//to solve
-		for(Pair<Integer,Integer> objective:objectivesCoordinates){
-		    ArrayList<AStar.Square> path = new ArrayList<AStar.Square>();
+//        HashMap<ArrayList<AStar.Square>, Integer> paths = new HashMap<ArrayList<AStar.Square>, Integer>();
+//        try {
+////            AStar as = new AStar(map, map[0].length, map.length);
+//
+////to solve
+//            for (Pair<Integer, Integer> objective : objectivesCoordinates) {
+//                ArrayList<AStar.Square> path = new ArrayList<AStar.Square>();
+//
+//                int blocked[][] = new int[map.length][map[0].length];
+//                for (int i = 0; i < map.length; ++i) {
+//                    for (int j = 0; j < map[0].length; ++j) {
+//                        if (map[i][j] == Type.FENCE || map[i][j] == Type.WOLF1 || map[i][j] == Type.WOLF2) {
+//                            blocked[i][j] = -1;
+//                        } else {
+//                            blocked[i][j] = 0;
+//                        }
+//                    }
+//                }
+//
+//
+//                AStar asc = new AStar(map, map[0].length, map.length);
+//
+////                System.out.println("X: " + x);
+////                System.out.println("Y: " + y);
+//                System.out.println(objective.getKey() + " - " + objective.getValue());
+//                path = asc.searchWithAStar(map, x, y, objective.getKey(), objective.getValue(), blocked);
+//                paths.put(path, path.size());
+//
+//            }
+//
+//        }catch(Exception ex){
+//            ex.printStackTrace();
+//        }
+//
+//
+//		try {
+//
+//            int min = Integer.MAX_VALUE;
+//
+//            for(int new_min:paths.values())
+//                if(min > new_min)
+//                    min = new_min;
+//
+//            System.out.println(min);
+//            for(ArrayList<AStar.Square> al:paths.keySet()) {
+//                for (AStar.Square a : al) {
+//                    System.out.println("X POS: " + a.xPos + " Y POS: " + a.yPos + " TYPE: " + a.type);
+//                }
+//                System.out.println(paths.get(al));
+//            }
 
-		    int blocked[][] = new int[map.length][map[0].length];
-		    for(int i=0; i<map.length; ++i){
-		        for(int j=0; j<map[0].length; ++j) {
-                    if (map[i][j] == Type.FENCE || map[i][j] == Type.WOLF1 || map[i][j] == Type.WOLF2) {
-                        blocked[i][j] = -1;
-                    }
-                    else {
-                        blocked[i][j] = 0;
-                    }
-                }
+
+        for(Pair<Integer, Integer> c:objectivesCoordinates){
+
+            LinkedList<AStarNode> l = (LinkedList) new AStarSearch().findPath(new AStarNode(this.x, this.y, map[y][x], map), new AStarNode(c.getKey(), c.getValue(), map[c.getValue()][c.getKey()], map));
+
+            System.out.println("PATH:");
+            for(AStarNode n:l){
+                System.out.println("---");
+                System.out.println("XPOS: "+n.xPos+" YPOS: "+n.yPos+" TYPE: "+n.nodeType);
+                System.out.println("---");
             }
 
-
-
-            AStar asc = new AStar(map, map[0].length, map.length);
-
-		    System.out.println("X: "+x);
-		    System.out.println("Y: "+y);
-
-		    path = asc.searchWithAStar(map, x, y, objective.getKey(), objective.getValue(), blocked);
-            paths.put(path, path.size());
         }
 
-		try {
-            if (checkAdjcentSquares(map)[1])
-                move = Move.RIGHT;
-            else
-                System.out.println("NOT SAFE TO MOVE UP");
+        if(checkAdjcentSquares(map)[1]) {
+            move = Move.RIGHT;
+        }
+        if(checkAdjcentSquares(map)[0]) {
+            move = Move.UP;
+        }
+        if(checkAdjcentSquares(map)[2]) {
+            move = Move.DOWN;
+        }
+        if(checkAdjcentSquares(map)[3]) {
+            move = Move.LEFT;
+        }
             //move = Move.UP;
-        }catch(Exception ex){
-		    //Don't go outside the map
-            //System.out.println("Don't go outside the map");
-        }
+//        }catch(Exception ex){
+//		    //Don't go outside the map
+//            //System.out.println("Don't go outside the map");
+//        }
     }
 }
