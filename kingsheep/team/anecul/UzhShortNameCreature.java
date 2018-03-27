@@ -385,6 +385,7 @@ public abstract class UzhShortNameCreature extends Creature {
         protected Type nodeType;
         protected Type[][] currentMapState;
 
+
         public AStarNode(int x, int y, Type type, Type[][] currentMapState){
             this.xPos = x;
             this.yPos = y;
@@ -401,9 +402,11 @@ public abstract class UzhShortNameCreature extends Creature {
 
         public int compareTo(Object other) {
             float thisValue = this.getCost();
+
             float otherValue = ((AStarNode)other).getCost();
 
             float v = thisValue - otherValue;
+
             return (v>0)?1:(v<0)?-1:0; // sign function
         }
 
@@ -413,7 +416,7 @@ public abstract class UzhShortNameCreature extends Creature {
          adjacent (AKA "neighbor" or "child") node.
          */
         public float getCost(AStarNode node){
-            return costFromStart + 1;
+            return this.costFromStart + 1;
         }
 
 
@@ -432,7 +435,7 @@ public abstract class UzhShortNameCreature extends Creature {
          Gets the children (AKA "neighbors" or "adjacent nodes")
          of this node.
          */
-        public List getNeighbors(){
+        public List<AStarNode> getNeighbors(){
             List<AStarNode> toReturn = new ArrayList<AStarNode>();
 
             if(this.yPos-1 > 0) {
@@ -445,7 +448,7 @@ public abstract class UzhShortNameCreature extends Creature {
                 toReturn.add(new AStarNode(this.xPos-1, this.yPos, typeOfTheNeighbourNode, this.currentMapState));
             }
 
-            if(this.yPos < this.currentMapState.length) {
+            if(this.yPos+1 < this.currentMapState.length) {
                 Type typeOfTheNeighbourNode = this.currentMapState[this.yPos+1][this.xPos];
                 toReturn.add(new AStarNode(this.xPos, this.yPos + 1, typeOfTheNeighbourNode, this.currentMapState));
             }
@@ -461,7 +464,7 @@ public abstract class UzhShortNameCreature extends Creature {
         }
     }
 
-    public class AStarSearch {
+    public static class AStarSearch {
 
 
         public AStarSearch(){
@@ -473,16 +476,16 @@ public abstract class UzhShortNameCreature extends Creature {
          determined by the object's Comparable interface.
          The highest priority item is first in the list.
          */
-        public class PriorityList extends LinkedList {
+        public class PriorityList extends LinkedList<AStarNode> {
 
             public void add(Comparable object) {
                 for (int i=0; i<size(); i++) {
                     if (object.compareTo(get(i)) <= 0) {
-                        add(i, object);
+                        add(i, (AStarNode) object);
                         return;
                     }
                 }
-                addLast(object);
+                addLast((AStarNode) object);
             }
         }
 
@@ -490,12 +493,16 @@ public abstract class UzhShortNameCreature extends Creature {
         /**
          Construct the path, not including the start node.
          */
-        protected List constructPath(AStarNode node) {
-            LinkedList path = new LinkedList();
+        protected List<AStarNode> constructPath(AStarNode node) {
+            LinkedList<AStarNode> path = new LinkedList<AStarNode>();
+
             while (node.pathParent != null) {
+
                 path.addFirst(node);
                 node = node.pathParent;
+
             }
+
             return path;
         }
 
@@ -520,33 +527,66 @@ public abstract class UzhShortNameCreature extends Creature {
             while (!openList.isEmpty()) {
                 AStarNode node = (AStarNode)openList.removeFirst();
 
-
-                if (node == goalNode) {
+                if (node.xPos == goalNode.xPos && node.yPos == goalNode.yPos) {
                     // construct the path from start to goal
-                    System.out.println("here");
+//                    if(goalNode.pathParent != null)
+//                        System.out.println("Parent of goal x= "+goalNode.pathParent.xPos+"y= "+goalNode.pathParent.yPos);
                     return constructPath(goalNode);
                 }
 
                 List neighbors = node.getNeighbors();
+
+//                System.out.println("Neighbours of x="+node.xPos+" y="+node.yPos+":");
+//                for(int i=0; i<neighbors.size(); ++i){
+//                    AStarNode a = (AStarNode)neighbors.get(i);
+//                    System.out.println("x="+a.xPos+" y="+a.yPos+";");
+//
+//                }
+
                 for (int i=0; i<neighbors.size(); i++) {
-                    AStarNode neighborNode =
-                            (AStarNode)neighbors.get(i);
+
+                    AStarNode neighborNode = (AStarNode)neighbors.get(i);
+
                     boolean isOpen = openList.contains(neighborNode);
-                    boolean isClosed =
-                            closedList.contains(neighborNode);
-                    float costFromStart = node.costFromStart +
-                            node.getCost(neighborNode);
+                    boolean isClosed = closedList.contains(neighborNode);
+
+                    float costFromStart = node.costFromStart + node.getCost(neighborNode);
+
+                    for(int j=0; j<openList.size(); ++j){
+
+                        AStarNode asn = (AStarNode)(openList.get(j));
+
+                        if(neighborNode.xPos == asn.xPos && neighborNode.yPos == asn.yPos)
+                            isOpen = true;
+                    }
+
+                    for(int j=0; j<closedList.size(); ++j){
+
+                        AStarNode asn = (AStarNode)(closedList.get(j));
+
+                        if(neighborNode.xPos == asn.xPos && neighborNode.yPos == asn.yPos)
+                            isClosed = true;
+                    }
+
+//                    System.out.println("In the open list " + isOpen);
+//                    System.out.println("In the closed list " + isClosed);
 
 
                     // check if the neighbor node has not been
                     // traversed or if a shorter path to this
                     // neighbor node is found.
-                    if ((!isOpen && !isClosed) ||
-                            costFromStart < neighborNode.costFromStart)
+//                    System.out.println("Current cost from start: "+costFromStart);
+//                    System.out.println("Neighbour cost from start: "+neighborNode.costFromStart);
+                    if ((!isOpen && !isClosed) || costFromStart < neighborNode.costFromStart)
                     {
                         neighborNode.pathParent = node;
+
+                        //System.out.println("The parent of xPos "+neighborNode.xPos+" yPos "+neighborNode.yPos+" is x: "+node.xPos+" y: "+ node.yPos);
+
                         neighborNode.costFromStart = costFromStart;
                         neighborNode.estimatedCostToGoal = neighborNode.getEstimatedCost(goalNode);
+
+
                         if (isClosed) {
                             closedList.remove(neighborNode);
                         }
@@ -556,6 +596,12 @@ public abstract class UzhShortNameCreature extends Creature {
                     }
                 }
                 closedList.add(node);
+
+//                System.out.println("In closed list now: ");
+//                for(int j=0; j<closedList.size(); ++j){
+//                    AStarNode a = (AStarNode)closedList.get(j);
+//                    System.out.println("x: "+a.xPos+" y: "+a.yPos);
+//                }
 
             }
 

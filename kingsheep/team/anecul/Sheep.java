@@ -187,12 +187,16 @@ public class Sheep extends UzhShortNameCreature {
 
             LinkedList<AStarNode> l = (LinkedList) new AStarSearch().findPath(new AStarNode(this.x, this.y, map[y][x], map), new AStarNode(c.getKey(), c.getValue(), map[c.getValue()][c.getKey()], map));
 
-            System.out.println("PATH:");
+            //System.out.println("SIZE: "+l.size());
+
+            System.out.println("PATH for coordinates XPOS = "+c.getKey()+" YPOS = "+c.getValue()+":");
             for(AStarNode n:l){
                 System.out.println("---");
                 System.out.println("XPOS: "+n.xPos+" YPOS: "+n.yPos+" TYPE: "+n.nodeType);
                 System.out.println("---");
             }
+
+
 
         }
 
